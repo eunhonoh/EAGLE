@@ -511,6 +511,30 @@ void HomopolymerIndelModel::apply( boost::mt19937& randomGen, const double error
 }
 
 
+SimpleIndelModel::SimpleIndelModel( )
+        : deletionProb_(0.1f)
+        , insertionProb_(0.1f)
+{
+}
+
+void SimpleIndelModel::apply( boost::mt19937& randomGen, unsigned int& randomErrorType )
+{
+    double delErrorRate = deletionProb_;
+    double insErrorRate = insertionProb_;
+    double randomValue = (double)randomGen() / (double)randomGen.max();
+
+    if (randomValue < delErrorRate )
+    {
+        randomErrorType = ErrorModel::BaseDeletion;
+    }
+    else if (randomValue < delErrorRate + insErrorRate )
+    {
+        randomErrorType = ErrorModel::BaseInsertion;
+    }
+
+
+}
+
 class MotifRepeatQualityDropInfo
 {
 public:
@@ -841,6 +865,7 @@ ErrorModel::ErrorModel( const vector<boost::filesystem::path>& qualityTableFilen
     : qualityModel_           ( qualityTableFilenames )
     , sequencingMismatchModel_( mismatchTableFilename )
     , homopolymerIndelModel_  ( homopolymerIndelTableFilename )
+    , simpleIndelModel_ ()
     , motifQualityDropModel_  ( motifQualityDropTableFilename )
     , randomQualityDropModel_ ()
     , qualityGlitchModel_     ()
@@ -865,15 +890,16 @@ void ErrorModel::getQualityAndRandomError( boost::mt19937& randomGen, const unsi
     assert( bclBase >= 0 && bclBase < 4 );
 
 //    quality = qualityModel_.getQuality( randomGen, cycle, bclBase, clusterErrorModelContext );
-    quality = qualityModel_.getQuality( randomGen, cycle, clusterErrorModelContext );
-    motifQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext, cycle, randomGen );
-    randomQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
-    qualityGlitchModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
-    happyPhasingModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+
+    quality = 40; //qualityModel_.getQuality( randomGen, cycle, clusterErrorModelContext );
+    //motifQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext, cycle, randomGen );
+    //randomQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+    //qualityGlitchModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+    //happyPhasingModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
 
     // Apply quality drop due to phasing, using an additive strategy
     // This quality drop was calculated as part of the previous "applyQualityDrop" methods
-    quality -= clusterErrorModelContext.phasingContext.qualityDrop;
+    //quality -= clusterErrorModelContext.phasingContext.qualityDrop;
 
     // Make sure quality scores stay above 2
     if ( quality < 2 )
@@ -895,10 +921,13 @@ void ErrorModel::getQualityAndRandomError( boost::mt19937& randomGen, const unsi
     }
 #endif //ifdef REPORT_ERROR_RATE
 
-    sequencingMismatchModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
-    homopolymerIndelModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
-    longreadBaseDuplicationModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
-    longreadDeletionModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
+    //randomErrorType = NoError;
+    //simpleIndelModel_.apply( randomGen, randomErrorType);
+
+    //sequencingMismatchModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
+    //homopolymerIndelModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
+    //longreadBaseDuplicationModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
+    //longreadDeletionModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
 }
 
 } // namespace genome

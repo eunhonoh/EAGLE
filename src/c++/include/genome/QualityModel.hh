@@ -124,6 +124,16 @@ private:
     std::vector< double > homoInsertionTable_;
 };
 
+class SimpleIndelModel
+{
+public:
+    SimpleIndelModel( );
+    void apply( boost::mt19937& randomGen, unsigned int& randomErrorType );
+private:
+    float deletionProb_;
+    float insertionProb_;
+};
+
 
 class MotifQualityDropModel
 {
@@ -192,6 +202,7 @@ private:
     QualityModel qualityModel_;
     SequencingMismatchModel sequencingMismatchModel_;
     HomopolymerIndelModel homopolymerIndelModel_;
+    SimpleIndelModel simpleIndelModel_;
     MotifQualityDropModel motifQualityDropModel_;
     RandomQualityDropModel randomQualityDropModel_;
     QualityGlitchModel qualityGlitchModel_;

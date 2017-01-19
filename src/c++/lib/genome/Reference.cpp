@@ -580,7 +580,7 @@ void GenomeSizeXml::save(const boost::filesystem::path &file, const eagle::io::F
             sequenceSizes.add_child("chromosome",node);
         }
     }
-    write_xml(file.string(), tree, std::locale(), xml_writer_settings<char>(' ', 4));
+    write_xml(file.string(), tree, std::locale(), xml_writer_settings<std::string>(' ', 4));
 }
 
 
