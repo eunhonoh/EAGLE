@@ -38,7 +38,7 @@ SequencerSimulator::SequencerSimulator (const SequencerSimulatorOptions &options
     , runInfo_        ( options.runInfo )
     , tileNum_        ( (options_.lane-1)*options_.tilesPerLane + (options_.tileNum-1) )
     , fragmentList_   ( options_.fragmentsDir /*options.binNum*(options.readCount/options.binCount)*/ )
-    , readClusterFactory_( runInfo_, options_.sampleGenomeDir, options_.qualityTableFiles, options_.mismatchTableFile, options_.homopolymerIndelTableFile, options_.motifQualityDropTableFile, options_.qqTableFile, options_.randomSeed, options_.errorModelOptions )
+    , readClusterFactory_( runInfo_, options_.sampleGenomeDir, options_.qualityTableFiles, options_.mismatchTableFile, options_.homopolymerIndelTableFile, options_.simpleIndelTableFile, options_.motifQualityDropTableFile, options_.qqTableFile, options_.randomSeed, options_.errorModelOptions )
 {
 }
 

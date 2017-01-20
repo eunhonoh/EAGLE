@@ -127,7 +127,7 @@ private:
 class SimpleIndelModel
 {
 public:
-    SimpleIndelModel( );
+    SimpleIndelModel( const boost::filesystem::path& simpleIndelTableFilename );
     void apply( boost::mt19937& randomGen, unsigned int& randomErrorType );
 private:
     float deletionProb_;
@@ -195,7 +195,7 @@ class ErrorModel
 public:
     enum ErrorType { NoError, BaseSubstitution, BaseDeletion, BaseInsertion } ;
 
-    ErrorModel( const std::vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFilename, const boost::filesystem::path& motifQualityDropTableFilename, const boost::filesystem::path& qqTableFilename, const std::vector< std::string >& errorModelOptions );
+    ErrorModel( const std::vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFilename, const boost::filesystem::path& simpleIndelTableFilename, const boost::filesystem::path& motifQualityDropTableFilename, const boost::filesystem::path& qqTableFilename, const std::vector< std::string >& errorModelOptions );
     void getQualityAndRandomError( boost::mt19937& randomGen, const unsigned int cycle, const char base, unsigned int& quality, unsigned int& randomErrorType, char& bclBase, ClusterErrorModelContext& clusterErrorModelContext );
 
 private:

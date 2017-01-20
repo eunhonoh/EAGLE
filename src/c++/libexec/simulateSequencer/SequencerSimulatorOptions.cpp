@@ -62,6 +62,8 @@ SequencerSimulatorOptions::SequencerSimulatorOptions()
                                 "[input]  \tFile containing the mismatch table (default: equal probabilities for each SNP, no indel)")
         ("homopolymer-indel-table",      bpo::value< bfs::path >(&homopolymerIndelTableFile),
                                 "[input]  \tFile containing the homopolymer indel table (default: no indel)")
+        ("simple-indel-table",      bpo::value< bfs::path >(&simpleIndelTableFile),
+                                "[input]  \tFile containing the simple indel table (default: no indel)")
         ("motif-quality-drop-table",   bpo::value< bfs::path >(&motifQualityDropTableFile),
                                 "[input]  \tFile containing the motif quality drop table (default: no quality drop)")
         ("qq-table",            bpo::value< bfs::path >(&qqTableFile),

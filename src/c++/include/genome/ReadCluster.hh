@@ -31,7 +31,7 @@ namespace genome
 class ReadClusterSharedData
 {
 public:
-    ReadClusterSharedData( const unsigned int clusterLength, const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const std::vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions );
+    ReadClusterSharedData( const unsigned int clusterLength, const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const std::vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& simpleIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions );
 
     unsigned int clusterLength_;
     const eagle::io::RunInfo &runInfo_;

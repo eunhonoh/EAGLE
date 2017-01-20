@@ -21,10 +21,10 @@ namespace genome
 {
 
 
-ReadClusterSharedData::ReadClusterSharedData( const unsigned int clusterLength, const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions )
+ReadClusterSharedData::ReadClusterSharedData( const unsigned int clusterLength, const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& simpleIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions )
     : clusterLength_  ( clusterLength )
     , runInfo_        ( runInfo )
-    , errorModel_     ( qualityTableFiles, mismatchTableFile, homopolymerIndelTableFile, motifQualityDropTableFile, qqTableFile, errorModelOptions )
+    , errorModel_     ( qualityTableFiles, mismatchTableFile, homopolymerIndelTableFile, simpleIndelTableFile, motifQualityDropTableFile, qqTableFile, errorModelOptions )
     , userRandomSeed_ ( userRandomSeed )
 {
     SharedFastaReference::init( sampleGenomeDir );
@@ -247,9 +247,9 @@ const string ReadClusterWithErrors::getNucleotideOrQualitySequenceForRead( unsig
 }
 
 
-ReadClusterFactory::ReadClusterFactory( const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions )
+ReadClusterFactory::ReadClusterFactory( const eagle::io::RunInfo &runInfo, const boost::filesystem::path& sampleGenomeDir, const vector<boost::filesystem::path>& qualityTableFiles, const boost::filesystem::path& mismatchTableFile, const boost::filesystem::path& homopolymerIndelTableFile, const boost::filesystem::path& simpleIndelTableFile, const boost::filesystem::path& motifQualityDropTableFile, const boost::filesystem::path& qqTableFile, const unsigned int userRandomSeed, const std::vector< std::string >& errorModelOptions )
     : runInfo_(runInfo)
-    , sharedData_( runInfo_.getClusterLength(), runInfo_, sampleGenomeDir, qualityTableFiles, mismatchTableFile, homopolymerIndelTableFile, motifQualityDropTableFile, qqTableFile, userRandomSeed, errorModelOptions )
+    , sharedData_( runInfo_.getClusterLength(), runInfo_, sampleGenomeDir, qualityTableFiles, mismatchTableFile, homopolymerIndelTableFile, simpleIndelTableFile, motifQualityDropTableFile, qqTableFile, userRandomSeed, errorModelOptions )
 {
 }
 

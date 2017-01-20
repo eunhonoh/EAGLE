@@ -511,10 +511,36 @@ void HomopolymerIndelModel::apply( boost::mt19937& randomGen, const double error
 }
 
 
-SimpleIndelModel::SimpleIndelModel( )
-        : deletionProb_(0.1f)
-        , insertionProb_(0.1f)
+SimpleIndelModel::SimpleIndelModel( const boost::filesystem::path& simpleIndelTableFilename )
 {
+    if (simpleIndelTableFilename == "")
+    { // Use default values: no indels
+        deletionProb_ = 0.0f;
+        insertionProb_ = 0.0f;
+    }
+    else
+    { // Parse simple indel table file
+        io::DsvReader tsvReader( simpleIndelTableFilename );
+        vector<string> tokens;
+        tsvReader.getNextLineFields<'\t'>(tokens);
+
+        if ( tokens.size() == 0 ) { continue; }
+        assert ( tokens.size() == 2 && "There should be 2 entries per line" );
+        vector<double> values;
+        try
+        {
+            std::transform( tokens.begin(), tokens.end(), std::back_inserter(values), boost::bind( &boost::lexical_cast<double,std::string>, _1) );
+        }
+        catch (const boost::bad_lexical_cast &e)
+        {
+            EAGLE_ERROR("Error while reading homopolymer indel table: a numerical field seems to contain non-numerical characters");
+        }
+        assert( values.size() == 2 );
+        deletionProb_ = values[0];
+        insertionProb_ = values[1];
+
+        EAGLE_PRINT(" deletionProb_: " << deletionProb_  << " insertionProb_: " << insertionProb_);
+    }
 }
 
 void SimpleIndelModel::apply( boost::mt19937& randomGen, unsigned int& randomErrorType )
@@ -531,8 +557,6 @@ void SimpleIndelModel::apply( boost::mt19937& randomGen, unsigned int& randomErr
     {
         randomErrorType = ErrorModel::BaseInsertion;
     }
-
-
 }
 
 class MotifRepeatQualityDropInfo
@@ -861,11 +885,11 @@ double QQTable::qualToErrorRate( const unsigned int qual )
 }
 
 
-ErrorModel::ErrorModel( const vector<boost::filesystem::path>& qualityTableFilenames, const boost::filesystem::path& mismatchTableFilename, const boost::filesystem::path& homopolymerIndelTableFilename, const boost::filesystem::path& motifQualityDropTableFilename, const boost::filesystem::path& qqTableFilename, const std::vector< std::string >& errorModelOptions )
+ErrorModel::ErrorModel( const vector<boost::filesystem::path>& qualityTableFilenames, const boost::filesystem::path& mismatchTableFilename, const boost::filesystem::path& homopolymerIndelTableFilename, const boost::filesystem::path& simpleIndelTableFilename, const boost::filesystem::path& motifQualityDropTableFilename, const boost::filesystem::path& qqTableFilename, const std::vector< std::string >& errorModelOptions )
     : qualityModel_           ( qualityTableFilenames )
     , sequencingMismatchModel_( mismatchTableFilename )
     , homopolymerIndelModel_  ( homopolymerIndelTableFilename )
-    , simpleIndelModel_ ()
+    , simpleIndelModel_ ( simpleIndelTableFilename )
     , motifQualityDropModel_  ( motifQualityDropTableFilename )
     , randomQualityDropModel_ ()
     , qualityGlitchModel_     ()
@@ -891,15 +915,15 @@ void ErrorModel::getQualityAndRandomError( boost::mt19937& randomGen, const unsi
 
 //    quality = qualityModel_.getQuality( randomGen, cycle, bclBase, clusterErrorModelContext );
 
-    quality = 40; //qualityModel_.getQuality( randomGen, cycle, clusterErrorModelContext );
-    //motifQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext, cycle, randomGen );
-    //randomQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
-    //qualityGlitchModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
-    //happyPhasingModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+    quality = qualityModel_.getQuality( randomGen, cycle, clusterErrorModelContext );
+    motifQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext, cycle, randomGen );
+    randomQualityDropModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+    qualityGlitchModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
+    happyPhasingModel_.applyQualityDrop( quality, bclBase, clusterErrorModelContext );
 
     // Apply quality drop due to phasing, using an additive strategy
     // This quality drop was calculated as part of the previous "applyQualityDrop" methods
-    //quality -= clusterErrorModelContext.phasingContext.qualityDrop;
+    quality -= clusterErrorModelContext.phasingContext.qualityDrop;
 
     // Make sure quality scores stay above 2
     if ( quality < 2 )
@@ -921,8 +945,8 @@ void ErrorModel::getQualityAndRandomError( boost::mt19937& randomGen, const unsi
     }
 #endif //ifdef REPORT_ERROR_RATE
 
-    //randomErrorType = NoError;
-    //simpleIndelModel_.apply( randomGen, randomErrorType);
+    randomErrorType = NoError;
+    simpleIndelModel_.apply( randomGen, randomErrorType);
 
     //sequencingMismatchModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );
     //homopolymerIndelModel_.apply( randomGen, errorRate, randomErrorType, bclBase, clusterErrorModelContext );

@@ -43,6 +43,7 @@ public:
     std::vector< boost::filesystem::path > qualityTableFiles;
     boost::filesystem::path mismatchTableFile;
     boost::filesystem::path homopolymerIndelTableFile;
+    boost::filesystem::path simpleIndelTableFile;
     boost::filesystem::path motifQualityDropTableFile;
     boost::filesystem::path qqTableFile;
     boost::filesystem::path outDir;
