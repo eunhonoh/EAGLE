@@ -85,6 +85,10 @@ Path to an alternative mismatch table
 
 Path to an alternative homopolymer indel table
 
+=item B<--simple-indel-table=<PATH>>    I<(=@EAGLE_FULL_DATADIR@/MismatchTables/DefaultSimpleIndelTable.tsv)>
+
+Path to an alternative simple indel table
+
 =item B<--motif-quality-drop-table=<PATH>>    I<(=@EAGLE_FULL_DATADIR@/MotifQualityDropTables/ZeroMotifQualityDropTable.tsv)>
 
 Path to an alternative motif quality drop table
@@ -219,6 +223,7 @@ my $qqTable         = File::Spec->catfile( $EAGLE_DATADIR, 'QualityTables', 'Def
 my $templateLengthTable = File::Spec->catfile( $EAGLE_DATADIR, 'TemplateLengthTables', 'DefaultTemplateLengthTable.tsv');
 my $mismatchTable   = File::Spec->catfile( $EAGLE_DATADIR, 'MismatchTables', 'DefaultMismatchTable.tsv');
 my $homopolymerIndelTable = File::Spec->catfile( $EAGLE_DATADIR, 'MismatchTables', 'DefaultHomopolymerIndelTable.tsv');
+my $simpleIndelTable = File::Spec->catfile( $EAGLE_DATADIR, 'MismatchTables', 'DefaultSimpleIndelTable.tsv');
 my $motifQualityDropTable = File::Spec->catfile( $EAGLE_DATADIR, 'MotifQualityDropTables', 'ZeroMotifQualityDropTable.tsv');
 my $gcCoverageFitTable = undef;
 my $coverageDepth   = 30;  # FragmentAllocator uses 30 by default, but I want to concentrate default values in just one place
@@ -244,6 +249,7 @@ my %options =
     'template-length-table'      => \$templateLengthTable,
     'mismatch-table'             => \$mismatchTable,
     'homopolymer-indel-table'    => \$homopolymerIndelTable,
+    'simple-indel-table'         => \$simpleIndelTable,
     'motif-quality-drop-table'   => \$motifQualityDropTable,
     'gc-coverage-fit-table'      => \$gcCoverageFitTable,
     'error-model-options'        => \@errorModelOptions,
@@ -267,7 +273,7 @@ my %options =
 my $result = GetOptions(\%options,
                         'run-info|i=s',
                         'reference-genome|g=s@', 'variant-list|v=s@', 'sample-genome|s=s', 'run-folder|r=s', 'error-model-options=s@',
-                        'quality-table|q=s@', 'qq-table=s', 'template-length-table|t=s', 'mismatch-table|m=s', 'homopolymer-indel-table=s',
+                        'quality-table|q=s@', 'qq-table=s', 'template-length-table|t=s', 'mismatch-table|m=s', 'homopolymer-indel-table=s', 'simple-indel-table=s',
                         'motif-quality-drop-table=s', 'gc-coverage-fit-table=s', 'coverage-depth|d=f', 'random-seed=i', 'workflow|w=s',
                         'genome-mutator-options=s@', 'fragments-allocator-options=s', 'run-folder-generator-options=s', 'sequencer-simulator-options=s',
                         'generate-run-id!', 'force!', 'always-force!',  # 'make!',
@@ -298,6 +304,7 @@ my $fullQQTable = rel2abs( $qqTable );
 my $fullTemplateLengthTable = rel2abs( $templateLengthTable );
 my $fullMismatchTable = rel2abs( $mismatchTable );
 my $fullHomopolymerIndelTable = rel2abs( $homopolymerIndelTable );
+my $fullSimpleIndelTable = rel2abs( $simpleIndelTable );
 my $fullMotifQualityDropTable = rel2abs( $motifQualityDropTable );
 my $fullGcCoverageFitTable = rel2abs( $gcCoverageFitTable ) if defined $gcCoverageFitTable;
 
@@ -306,6 +313,7 @@ if (! -f $fullQQTable || ! -r $fullQQTable) { print "ERROR: File $fullQQTable is
 if (! -f $fullTemplateLengthTable || ! -r $fullTemplateLengthTable) { print "ERROR: File $fullTemplateLengthTable is not readable\n"; exit -1; }
 if (! -f $fullMismatchTable || ! -r $fullMismatchTable) { print "ERROR: File $fullMismatchTable is not readable\n"; exit -1; }
 if (! -f $fullHomopolymerIndelTable || ! -r $fullHomopolymerIndelTable) { print "ERROR: File $fullHomopolymerIndelTable is not readable\n"; exit -1; }
+if (! -f $fullSimpleIndelTable || ! -r $fullSimpleIndelTable) { print "ERROR: File $fullSimpleIndelTable is not readable\n"; exit -1; }
 if (! -f $fullMotifQualityDropTable || ! -r $fullMotifQualityDropTable) { print "ERROR: File $fullMotifQualityDropTable is not readable\n"; exit -1; }
 if (defined $gcCoverageFitTable && (! -f $fullGcCoverageFitTable || ! -r $fullGcCoverageFitTable)) { print "ERROR: File $fullGcCoverageFitTable is not readable\n"; exit -1; }
 foreach my $filename (@fullReferenceGenome) {
@@ -497,6 +505,7 @@ $config->declare( 'QQ_TABLE',          $fullQQTable);
 $config->declare( 'TEMPLATE_LENGTH_TABLE', $fullTemplateLengthTable);
 $config->declare( 'MISMATCH_TABLE',    $fullMismatchTable);
 $config->declare( 'HOMOPOLYMER_INDEL_TABLE', $fullHomopolymerIndelTable);
+$config->declare( 'SIMPLE_INDEL_TABLE', $fullSimpleIndelTable);
 $config->declare( 'MOTIF_QUALITY_DROP_TABLE', $fullMotifQualityDropTable);
 $config->declare( 'GC_COVERAGE_FIT_TABLE', $fullGcCoverageFitTable) if defined $gcCoverageFitTable;
 $config->declare( 'ERROR_MODEL_OPTIONS',"@fullErrorModelOptions");

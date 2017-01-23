@@ -32,6 +32,7 @@ $(EAGLE_OUTDIR)/.$(fmtLane)_%.bcl.completed:
 	        $(QQ_TABLE_OPTION) \
 	        $(MISMATCH_TABLE_OPTION) \
 	        $(HOMOPOLYMER_INDEL_TABLE_OPTION) \
+	        $(SIMPLE_INDEL_TABLE_OPTION) \
 	        $(MOTIF_QUALITY_DROP_TABLE_OPTION) \
 	        $(ERROR_MODEL_OPTIONS:%=--error-model-options=%) \
 	        --fragments-dir="$(dir $(word 2,$^))" \

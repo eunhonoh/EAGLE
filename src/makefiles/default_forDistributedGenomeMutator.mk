@@ -28,6 +28,9 @@ endif
 ifneq (,$(HOMOPOLYMER_INDEL_TABLE))
 HOMOPOLYMER_INDEL_TABLE_OPTION = --homopolymer-indel-table=$(HOMOPOLYMER_INDEL_TABLE)
 endif
+ifneq (,$(SIMPLE_INDEL_TABLE))
+SIMPLE_INDEL_TABLE_OPTION = --simple-indel-table=$(SIMPLE_INDEL_TABLE)
+endif
 
 .PHONY: all
 all: $(foreach lane,$(LANES),$(foreach tile,$(TILES), \
@@ -98,6 +101,7 @@ test.bam: $(EAGLE_OUTDIR)/$(RUN_FOLDER)/RunInfo.xml $(EAGLE_OUTDIR)/fragments.po
 	        $(QQ_TABLE_OPTION) \
 	        $(MISMATCH_TABLE_OPTION) \
 	        $(HOMOPOLYMER_INDEL_TABLE_OPTION) \
+	        $(SIMPLE_INDEL_TABLE_OPTION) \
 	        --insert-positions=$(word 2,$^) \
 	        --output-dir=$(dir $<) \
 	        --lane-count=$(words $(LANES)) \

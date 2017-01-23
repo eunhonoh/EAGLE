@@ -31,6 +31,9 @@ endif
 ifneq (,$(HOMOPOLYMER_INDEL_TABLE))
 HOMOPOLYMER_INDEL_TABLE_OPTION = --homopolymer-indel-table=$(HOMOPOLYMER_INDEL_TABLE)
 endif
+ifneq (,$(SIMPLE_INDEL_TABLE))
+SIMPLE_INDEL_TABLE_OPTION = --simple-indel-table=$(SIMPLE_INDEL_TABLE)
+endif
 ifneq (,$(MOTIF_QUALITY_DROP_TABLE))
 MOTIF_QUALITY_DROP_TABLE_OPTION = --motif-quality-drop-table=$(MOTIF_QUALITY_DROP_TABLE)
 endif
@@ -158,6 +161,7 @@ eagle_%.bam: $(EAGLE_OUTDIR)/$(RUN_FOLDER)/RunInfo.xml $(EAGLE_OUTDIR)/fragments
 	        $(QQ_TABLE_OPTION) \
 	        $(MISMATCH_TABLE_OPTION) \
 	        $(HOMOPOLYMER_INDEL_TABLE_OPTION) \
+	        $(SIMPLE_INDEL_TABLE_OPTION) \
 	        $(MOTIF_QUALITY_DROP_TABLE_OPTION) \
 	        $(ERROR_MODEL_OPTIONS:%=--error-model-options=%) \
 	        --fragments-dir="$(EAGLE_OUTDIR)/fragments" \
@@ -179,6 +183,7 @@ eagle.sample.bam: $(EAGLE_OUTDIR)/$(RUN_FOLDER)/RunInfo.xml $(EAGLE_OUTDIR)/frag
 	        $(QQ_TABLE_OPTION) \
 	        $(MISMATCH_TABLE_OPTION) \
 	        $(HOMOPOLYMER_INDEL_TABLE_OPTION) \
+	        $(SIMPLE_INDEL_TABLE_OPTION) \
 	        $(MOTIF_QUALITY_DROP_TABLE_OPTION) \
 	        $(ERROR_MODEL_OPTIONS:%=--error-model-options=%) \
 	        --fragments-dir="$(EAGLE_OUTDIR)/fragments" \

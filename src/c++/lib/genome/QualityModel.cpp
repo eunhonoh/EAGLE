@@ -524,7 +524,12 @@ SimpleIndelModel::SimpleIndelModel( const boost::filesystem::path& simpleIndelTa
         vector<string> tokens;
         tsvReader.getNextLineFields<'\t'>(tokens);
 
-        if ( tokens.size() == 0 ) { continue; }
+        if ( tokens.size() == 0 )
+        {
+            deletionProb_ = 0.0f;
+            insertionProb_ = 0.0f;
+            return;
+        }
         assert ( tokens.size() == 2 && "There should be 2 entries per line" );
         vector<double> values;
         try
